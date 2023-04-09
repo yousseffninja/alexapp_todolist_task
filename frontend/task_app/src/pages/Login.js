@@ -1,12 +1,12 @@
 import Layout from "../components/Layout";
 import axios from "../api/axios"
-import useAuth from "../context/AuthContext";
-import {useEffect, useRef, useState} from "react";
+import {useEffect, useRef, useState, useContext} from "react";
 import {TextField} from "@mui/material";
 import { Link } from 'react-router-dom'
+import AuthContext from "../context/AuthContext";
 const LOGIN_URL = '/api/v1/users/login'
 const Login = () => {
-
+    const { setAuth } = useContext(AuthContext)
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const  [errMsg, setErrMsg] = useState('');
@@ -22,7 +22,9 @@ const Login = () => {
             {
                 headers: {'Content-Type': 'application/json'},
             }
-        ).then(() => {
+        ).then((res) => {
+            const token = res?.data?.token
+            setAuth({ email, password, token });
             window.location.replace('/home');
         }).catch((e) => {
             console.log(e)

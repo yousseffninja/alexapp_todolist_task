@@ -86,3 +86,11 @@ exports.protect = catchAsync(async (req, res, next) => {
     req.user = freshUser;
     next();
 });
+
+exports.getMe = catchAsync(async (req, res, next) => {
+    const user = await User.findById(req.user.id)
+    res.status(200).json({
+        status: 'success',
+        user
+    });
+});
