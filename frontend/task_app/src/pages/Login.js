@@ -25,6 +25,7 @@ const Login = () => {
         ).then((res) => {
             const token = res?.data?.token
             setAuth({ email, password, token });
+            localStorage.setItem("user", res.data.token);
             window.location.replace('/home');
         }).catch((e) => {
             console.log(e)

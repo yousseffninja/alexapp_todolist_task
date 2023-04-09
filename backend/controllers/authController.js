@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 const catchAsync = require('./../utils/catchAsync');
 const AppError = require('./../utils/appError');
 const User = require('./../models/userModel');
+const Todos = require('./../models/todos');
 
 const signToken = id => {
     return jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -89,8 +90,18 @@ exports.protect = catchAsync(async (req, res, next) => {
 
 exports.getMe = catchAsync(async (req, res, next) => {
     const user = await User.findById(req.user.id)
+    console.log(user.todos)
+    const ids = user.todos
+    const arr = [];
+    await Promise.all(ids.map(async e => {
+        await Todos.findById(e)
+            .then(e => {
+                arr.push(e)
+            });
+    }))
     res.status(200).json({
         status: 'success',
-        user
+        user,
+        arr
     });
 });

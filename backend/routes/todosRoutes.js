@@ -4,11 +4,17 @@ const todosController = require('../controllers/todosController');
 
 const router = express.Router();
 
+router.post(
+    '/',
+    authController.protect,
+    todosController.createTodos
+);
+
 router
     .route('/:id')
     .get(
         authController.protect,
-        todosController.
+        todosController.getTodo
     )
     .patch(
         authController.protect,

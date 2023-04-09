@@ -5,6 +5,10 @@ const todosSchema = new mongoose.Schema({
         type: String,
         required: [true, 'Please provide todos text']
     },
+    isDone: {
+        type: Boolean,
+        default: false,
+    },
     user: {
         type: mongoose.Schema.ObjectId,
         ref: 'Users',

@@ -4,6 +4,7 @@ const cors = require('cors');
 const rateLimit = require('express-rate-limit');
 const cookieParser = require('cookie-parser');
 const userRouter = require('./routes/userRoutes');
+const todoRouter = require('./routes/todosRoutes');
 
 const app = express();
 app.enable('trust proxy');
@@ -37,6 +38,7 @@ app.use((req, res, next) => {
 });
 
 app.use('/api/v1/users', userRouter);
+app.use('/api/v1/todos', todoRouter);
 
 app.use((req, res, next) => {
     req.requestTime = new Date().toISOString();

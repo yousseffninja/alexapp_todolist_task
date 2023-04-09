@@ -11,8 +11,8 @@ exports.setUserIds = (req, res, next) => {
 
 exports.createTodos = catchAsync(async (req, res, next) => {
     const todo = await Todos.create(req.body);
-     Users.findByIdAndUpdate(req.user.id, {
-        $push: { "todos": todo.id },
+     await Users.findByIdAndUpdate(req.user.id, {
+        $push: { "todos": todo._id },
     });
 
     res.status(201).json({
@@ -25,7 +25,7 @@ exports.deleteTodos = catchAsync(async (req, res, next) => {
     const id = req.params.id
     await Todos.findByIdAndDelete(id);
     await Users.findByIdAndUpdate(req.user.id, {
-        pull: { "todos": id },
+        $pull: { "todos": id },
     });
 
     res.status(201).json({
