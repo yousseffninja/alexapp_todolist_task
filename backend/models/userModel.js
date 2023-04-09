@@ -41,6 +41,7 @@ const userSchema = new mongoose.Schema({
             type: mongoose.Schema.ObjectId,
             ref: 'todos'
         }],
+        default: [],
     },
 },{
     toJSON: { virtuals: true },
