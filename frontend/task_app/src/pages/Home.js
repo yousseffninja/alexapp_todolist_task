@@ -1,6 +1,9 @@
-import { useEffect, useState } from "react";
+import {useContext, useEffect, useState} from "react";
 import axios from "../api/axios";
 import { Button, Card, Form } from 'react-bootstrap';
+import TodosContext from "../context/TodosProvider";
+// import data from "bootstrap/js/src/dom/data";
+import useTodos from "../hooks/useTodos";
 
 const URL = "/api/v1/todos";
 const ME = "/api/v1/users/me";
@@ -22,6 +25,7 @@ function Todo({ todo, index, markTodo, removeTodo }) {
 
 function FormTodo({ addTodo }) {
     const [value, setValue] = useState("");
+    const data = useContext(TodosContext);
 
     const handleSubmit = e => {
         e.preventDefault();
@@ -45,16 +49,19 @@ function FormTodo({ addTodo }) {
 
 const Home = () => {
     const [todos, setTodos] = useState([]);
-
-    const getData = () => {
-        axios.get(ME, {
+    const { todosData } = useContext(TodosContext);
+    console.log("lol", todosData)
+    const getData = async () => {
+        const response = await axios.get(ME, {
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('user')}`
             }
-        }).then(res => {
+        }).then((res) => {
+            console.log(res);
             const todosArr = res.data.arr
             console.log(todosArr)
             setTodos(todosArr);
+
         });
         console.log(todos)
     }
@@ -66,7 +73,10 @@ const Home = () => {
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('user')}`
             }
-        }).then(e => window.location.replace('/home'));
+        }).then(e => {
+            console.log((e))
+            setTodos([...todos, e.data.todo]);
+        });
     }
 
     const markTodo = (id, index) => {
@@ -76,16 +86,39 @@ const Home = () => {
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('user')}`
             }
-        }).then(e => window.location.replace('/home'));
+        }).then(e => {
+            let elements = [...todos];
+            let currentElementIndex = elements.findIndex((x) => x.id === id);
+            elements[currentElementIndex].isDone = !elements[currentElementIndex].isDone
+            setTodos(elements);
+        });
     }
+
+    // useEffect(() => {
+    //     console.log(todosData);
+    //     setTodos(todosData);
+    // }, [todos])
 
     const removeTodo = (id) => {
         axios.delete(`${URL}/${id}`, {
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('user')}`
             }
-        }).then(e => window.location.replace('/home'));
+        }).then(e => {
+            const temp = [...todos];
+            temp.splice(id, 1);
+            setTodos(temp);
+        });
     }
+
+    const useTodoContext = () => {
+        const arr = [];
+        // data.map(e => arr.push(e));
+        console.log(todosData);
+        setTodos(todosData);
+    }
+
+    // useEffect(() => useTodoContext, [todos])
 
     return (
         <div className="app">

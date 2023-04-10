@@ -17,6 +17,7 @@ exports.createTodos = catchAsync(async (req, res, next) => {
 
     res.status(201).json({
         status: 'success',
+        todo
     });
 });
 exports.getTodo = factory.getOne(Todos);

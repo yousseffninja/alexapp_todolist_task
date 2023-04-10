@@ -2,19 +2,18 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Home from './pages/Home';
-import RequireAuth from './context/AuthContext'
+import {TodosProvider} from "./context/TodosProvider";
+
 
 function App() {
   return (
-      <Router>
-        <Routes>
-          <Route exact path="/"  element={<Login/>} />
-          <Route path="/register"  element={<Register/>} />
-          {/*<Route element={<RequireAuth />} >*/}
-            <Route path="/home"  element={<Home/>} />
-          {/*</Route>*/}
-        </Routes>
-      </Router>
+      <TodosProvider>
+          <Routes>
+              <Route path="/"  element={<Login/>} />
+              <Route path="/register"  element={<Register/>} />
+              <Route path="/home"  element={<Home/>} />
+          </Routes>
+      </TodosProvider>
   );
 }
 

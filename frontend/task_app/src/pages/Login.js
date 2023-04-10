@@ -4,9 +4,14 @@ import {useEffect, useRef, useState, useContext} from "react";
 import {TextField} from "@mui/material";
 import { Link } from 'react-router-dom'
 import AuthContext from "../context/AuthContext";
+import TodosProvider from '../context/TodosProvider'
+import useTodos from "../hooks/useTodos";
+import TodosContext from "../context/TodosProvider";
 const LOGIN_URL = '/api/v1/users/login'
+
 const Login = () => {
-    const { setAuth } = useContext(AuthContext)
+    // const { setAuth } = useContext(AuthContext)
+    const { todosData ,setTodos } = useContext(TodosContext);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const  [errMsg, setErrMsg] = useState('');
@@ -14,6 +19,7 @@ const Login = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        debugger
         const response = await axios.post(LOGIN_URL,
             JSON.stringify({
                 email,
@@ -24,12 +30,27 @@ const Login = () => {
             }
         ).then((res) => {
             const token = res?.data?.token
-            setAuth({ email, password, token });
+            // setAuth({ email, password, token });
             localStorage.setItem("user", res.data.token);
-            window.location.replace('/home');
+
         }).catch((e) => {
             console.log(e)
         })
+        const res = await axios.get("/api/v1/users/me", {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('user')}`
+            }
+        }).then((res) => {
+            const todo = res.data.arr
+            console.log(todo)
+            setTodos(todo)
+            // console.log(setTodos)
+            setTodos(res?.data?.arr);
+            // console.log(res?.data?.arr)
+            todosData&& console.log("lol", todosData)
+            // window.location.replace('/home');
+        })
+        //
     }
 
     return (
